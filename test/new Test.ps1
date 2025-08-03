@@ -4,6 +4,7 @@
 
 # Import required modules
 Import-Module Pester
+Import-Module PSScriptAnalyzer # Added additional module for script analysis
 
 # MODIFIED!!!!
 
@@ -22,6 +23,13 @@ function Test-Connection {
 function Format-JsonOutput {
     param($object)
     return $object | ConvertTo-Json -Depth 10
+}
+
+# New function utilizing PSScriptAnalyzer
+function Test-ScriptQuality {
+    param($scriptPath)
+    $analysis = Invoke-ScriptAnalyzer -Path $scriptPath
+    return $analysis
 }
 
 Describe "Code Inventory Tests" {
@@ -100,5 +108,16 @@ Describe "Code Inventory Tests" {
             $connected | Should -Be $true
         }
     }
+
+    # New test context using PSScriptAnalyzer
+    Context "Script Quality Analysis" {
+        It "Should pass basic script analysis" {
+            $scriptPath = $PSCommandPath
+            $analysisResults = Test-ScriptQuality -scriptPath $scriptPath
+            $errors = $analysisResults | Where-Object { $_.Severity -eq 'Error' }
+            $errors.Count | Should -Be 0
+        }
+    }
 }
+
 
