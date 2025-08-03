@@ -5,6 +5,25 @@
 # Import required modules
 Import-Module Pester
 
+# MODIFIED!!!!
+
+# Additional helper functions
+function Test-Connection {
+    param($url)
+    try {
+        $response = Invoke-WebRequest -Uri $url -Method Head
+        return $response.StatusCode -eq 200
+    }
+    catch {
+        return $false
+    }
+}
+
+function Format-JsonOutput {
+    param($object)
+    return $object | ConvertTo-Json -Depth 10
+}
+
 Describe "Code Inventory Tests" {
     Context "Gallery Functionality" {
         It "Should filter items correctly" {
@@ -38,6 +57,12 @@ Describe "Code Inventory Tests" {
             $filtered = filterItems -items $items -category "All" -searchTerm "test"
             $filtered.Count | Should -Be 1
         }
+
+        It "Should handle empty results gracefully" {
+            $items = @()
+            $filtered = filterItems -items $items -category "All" -searchTerm ""
+            $filtered.Count | Should -Be 0
+        }
     }
 
     Context "Modal Functionality" {
@@ -52,5 +77,28 @@ Describe "Code Inventory Tests" {
             hideItemModal($modal) 
             $modal.classList.Contains("active") | Should -Be $false
         }
+
+        It "Should populate modal content correctly" {
+            $testItem = @{
+                name = "Test Modal Item"
+                description = "Test Description"
+                type = "PowerShell"
+            }
+            
+            $modal = New-Object PSObject
+            $modal | Add-Member -MemberType NoteProperty -Name "content" -Value $testItem
+            
+            showItemModal($modal)
+            $modal.content.name | Should -Be "Test Modal Item"
+        }
+    }
+
+    Context "API Integration" {
+        It "Should connect to the API endpoint" {
+            $apiUrl = "https://workflows.idohomri.net"
+            $connected = Test-Connection -url $apiUrl
+            $connected | Should -Be $true
+        }
     }
 }
+
