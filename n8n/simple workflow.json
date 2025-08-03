@@ -1,0 +1,12 @@
+{
+    "nodes": [
+        {
+            "id": "1",
+            "type": "n8n-nodes-base.httpRequest",
+            "name": "HTTP Request",
+            "settings": {
+                "url": "https://api.github.com/repos/n8n-io/n8n/issues"
+            }
+        }
+    ]
+}
