@@ -1,0 +1,145 @@
+{
+    "nodes": [
+      {
+        "parameters": {
+          "jsCode": "return {\n  items: $input\n    .all()\n    .filter((i) => i.json.isAvailable === true)\n    .map((i) => {\n      return {\n        ...i,\n        json: {\n          ...i.json,\n          category: i.json.category\n            .split(\" \")\n            .map(\n              (word) =>\n                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),\n            )\n            .join(\" \"),\n          dependencies: JSON.parse(i.json.dependencies),\n          created_at: new Date(i.json._createTime).toLocaleString(\"en-US\", {\n            month: \"long\",\n            year: \"numeric\",\n          }),\n          created_at_full: new Date(i.json._createTime),\n          updated_at: new Date(i.json._updateTime).toLocaleString(\"en-US\", {\n            month: \"long\",\n            year: \"numeric\",\n          }),\n          updated_at_full: new Date(i.json._updateTime),\n        },\n      };\n    }),\n};\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -96,
+          -64
+        ],
+        "id": "927bcfc7-05bb-42bf-860d-ccbb1d66969b",
+        "name": "Filter For Available Only"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.4,
+        "position": [
+          128,
+          -64
+        ],
+        "id": "0914d88c-7d28-448a-a737-d8d29cd3e98f",
+        "name": "Respond to Webhook"
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "projectId": "idohomri-io-code-inventory",
+          "collection": "items",
+          "returnAll": true
+        },
+        "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+        "typeVersion": 1.1,
+        "position": [
+          -320,
+          -64
+        ],
+        "id": "18beeb53-0563-4d23-b4a3-bf00c1fa66ff",
+        "name": "Get All Items",
+        "credentials": {
+          "googleFirebaseCloudFirestoreOAuth2Api": {
+            "id": "CVAxKJFGpZ32cA6l",
+            "name": "Google Firebase Cloud Firestore account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "path": "5322f297-6f3c-4625-9ff5-2df49acfb619",
+          "responseMode": "responseNode",
+          "options": {
+            "allowedOrigins": "*"
+          }
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -544,
+          -64
+        ],
+        "id": "3941f62b-8419-4fce-a02e-94a759b33300",
+        "name": "On Post Request (as API)",
+        "webhookId": "5322f297-6f3c-4625-9ff5-2df49acfb619"
+      }
+    ],
+    "connections": {
+      "Filter For Available Only": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get All Items": {
+        "main": [
+          [
+            {
+              "node": "Filter For Available Only",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "On Post Request (as API)": {
+        "main": [
+          [
+            {
+              "node": "Get All Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "pinData": {
+      "On Post Request (as API)": [
+        {
+          "headers": {
+            "connection": "upgrade",
+            "host": "workflows.idohomri.net",
+            "referer": "http://localhost:5500/",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, br",
+            "priority": "u=1, i",
+            "cf-ray": "9697826c7fabc231-TLV",
+            "if-none-match": "W/\"584-x3Un8q62df+pKxIFbPBNf05/+wE\"",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+            "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
+            "sec-ch-ua-mobile": "?0",
+            "accept": "*/*",
+            "origin": "http://localhost:5500",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-dest": "empty",
+            "x-forwarded-for": "77.125.213.130",
+            "x-forwarded-proto": "https",
+            "cdn-loop": "cloudflare; loops=1",
+            "cf-connecting-ip": "77.125.213.130",
+            "cf-ipcountry": "IL",
+            "cf-visitor": "{\"scheme\":\"https\"}"
+          },
+          "params": {},
+          "query": {},
+          "body": {},
+          "webhookUrl": "https://workflows.idohomri.net/webhook/5322f297-6f3c-4625-9ff5-2df49acfb619",
+          "executionMode": "production"
+        }
+      ]
+    },
+    "meta": {
+      "templateCredsSetupCompleted": true,
+      "instanceId": "6e1167d4390213bda95e33cfd355d2e407f3de6cf6aa5346a96863a6d93a62b3"
+    }
+  }
