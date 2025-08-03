@@ -17,7 +17,7 @@ function Test-Connection {
     }
     catch {
         return $false
-    }
+    }   
 }
 
 function Format-JsonOutput {

@@ -19,7 +19,7 @@ Get-ADUserInfo -Username "jdoe"
 # Ensure the ActiveDirectory module is available and you have sufficient
 # permissions to query AD.
 #>
-
+   
 # import the Active Directory module if not already loaded
 if (-not (Get-Module -Name ActiveDirectory)) {
     Import-Module ActiveDirectory

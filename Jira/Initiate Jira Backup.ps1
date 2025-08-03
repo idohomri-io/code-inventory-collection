@@ -19,7 +19,7 @@ param(
 
     [Parameter(Mandatory = $true)]
     [string]$UserEmail
-)
+)   
 
 # <summary>
 #   Converts user credentials into a Base64-encoded string for basic authentication.
