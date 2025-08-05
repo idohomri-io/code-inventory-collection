@@ -6,21 +6,23 @@ Synopsis:
     Fetch and parse an RSS/Atom feed from a specified URL and display its entries.
 
 Description:
-    This script retrieves the content of an RSS or Atom feed given its URL,
-    parses it, and prints out the titles, links, and summaries of each entry.
-    It handles HTTP errors and malformed feeds gracefully, exiting with an
-    appropriate error message on failure.
+    This script retrieves and parses an RSS or Atom feed given its URL,
+    then lists each entry’s title, link (with sensible fallbacks), and
+    summary or description. It handles feeds that omit expected attributes
+    gracefully, avoiding crashes on missing fields.
 
 Use Cases:
-    1. Automate monitoring of blog or news updates in your terminal.
-    2. Integrate into larger Python automation workflows to fetch the latest
-       entries before processing them further.
-    3. Run periodically via cron to build a local archive or trigger downstream
-       notifications.
+    1. Monitor blogs, podcasts, or news feeds in your terminal even if some
+       items lack standard fields.
+    2. Integrate into CI/CD pipelines to fetch feed metadata for automated
+       notifications or archives.
+    3. Run periodically via cron to trigger downstream processes without
+       being interrupted by malformed or incomplete feed entries.
 
 Examples:
     $ python rss_reader.py https://example.com/feed.xml
-    $ python rss_reader.py https://example.com/feed.xml -n 5
+    $ python rss_reader.py https://example.com/feed.xml -n 3
+    $ python rss_reader.py "https://feeds.megaphone.fm/GLT1412515089" -n 1
 
 Copyright:
     Ido homri (ido@idohomri.io)
@@ -51,14 +53,14 @@ def fetch_rss_feed(url):
 
     feed = feedparser.parse(response.content)
     if feed.bozo:
-        # bozo_exception holds the underlying parse error
+        # feed.bozo_exception holds the underlying parse error
         raise RuntimeError(f"Error parsing RSS feed: {feed.bozo_exception}")
     return feed
 
 
 def display_feed_entries(feed, limit=None):
     """
-    Display entries from the parsed feed.
+    Display entries from the parsed feed, with fallback for missing fields.
 
     :param feed: FeedParserDict returned by feedparser.
     :param limit: Maximum number of entries to display (None for all).
@@ -71,10 +73,26 @@ def display_feed_entries(feed, limit=None):
 
     count = min(len(entries), limit) if limit is not None else len(entries)
     for idx, entry in enumerate(entries[:count], start=1):
-        print(f"{idx}. {entry.title}")
-        print(f"   Link: {entry.link}")
-        if hasattr(entry, "summary"):
-            print(f"   Summary: {entry.summary}")
+        # Title with fallback
+        title = entry.get('title', 'No title available')
+
+        # Link fallback order: 'link' → 'id' → first item in 'links' → None
+        link = (
+            entry.get('link')
+            or entry.get('id')
+            or (entry.get('links')[0].get('href') if entry.get('links') else None)
+        )
+
+        # Summary or description fallback
+        summary = (
+            entry.get('summary')
+            or entry.get('description')
+            or 'No summary available'
+        )
+
+        print(f"{idx}. {title}")
+        print(f"   Link: {link if link else 'No link available'}")
+        print(f"   Summary: {summary}")
         print()
 
 
@@ -88,7 +106,8 @@ def parse_args():
         description="Fetch and display RSS/Atom feed entries from a given URL."
     )
     parser.add_argument(
-        "url", help="The URL of the RSS or Atom feed to fetch."
+        "url",
+        help="The URL of the RSS or Atom feed to fetch."
     )
     parser.add_argument(
         "-n", "--number",
@@ -104,7 +123,6 @@ def main():
     Main entry point: parse arguments, fetch the feed, and display entries.
     """
     args = parse_args()
-
     try:
         feed = fetch_rss_feed(args.url)
     except RuntimeError as err:
