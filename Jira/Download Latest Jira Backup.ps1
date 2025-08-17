@@ -11,7 +11,7 @@
     number of times to retry the download if it fails.
 
 .PARAMETER retryDelaySeconds
-    number of seconds to wait between retries.
+    number of seconds to wait between retries. 
 
 .PARAMETER jiraBackupUrl
     the url of the jira backup file.
