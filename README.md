@@ -1,8 +1,6 @@
 # Code Inventory Collection
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Maintenance](https://img.shields.io/badge/Maintenance-Active-brightgreen.svg)](https://github.com/idohomri/code-inventory-collection)
-[![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-blue.svg)](https://github.com/idohomri/code-inventory-collection/issues)
 
 > A curated collection of free, open-source scripts and automations created by [Ido Homri](https://inventory.idohomri.io)
 
