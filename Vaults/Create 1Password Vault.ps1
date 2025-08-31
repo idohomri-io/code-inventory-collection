@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Creates a new 1Password vault using a service account token.
+    Creates a new 1Password vault using a service account token. 
 
 .DESCRIPTION
     This script defines a function that uses the 1Password CLI to authenticate
