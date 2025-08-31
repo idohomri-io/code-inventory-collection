@@ -13,7 +13,7 @@
 param(
     [Parameter(Mandatory = $true)]
     [string]$JiraBaseUrl,
-
+   
     [Parameter(Mandatory = $true)]
     [string]$ApiToken,
 

@@ -17,7 +17,7 @@
 
 .EXAMPLE
     # Import the script and call the function directly
-    . .\Create-1PasswordVault.ps1
+    . .\Create-1PasswordVault.ps1   
     Create-1PasswordVault -ServiceAccountToken "op://token/12345" -VaultName "MyNewVault"
 
 .EXAMPLE
