@@ -25,7 +25,7 @@ if (-not (Get-Module -Name ActiveDirectory)) {
     Import-Module ActiveDirectory
 }
 
-<#
+<#  
     .PARAMETER Username
     The samAccountName or distinguished name of the AD user to query.
 #>

@@ -27,7 +27,7 @@ param(
 )
 
 function Import-ADModule {
-    <#
+    <#  
     .SYNOPSIS
         import active directory module if not loaded
     .DESCRIPTION

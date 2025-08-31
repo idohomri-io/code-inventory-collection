@@ -10,7 +10,7 @@
 .PARAMETER maxRetries
     number of times to retry the download if it fails.
 
-.PARAMETER retryDelaySeconds
+.PARAMETER retryDelaySeconds 
     number of seconds to wait between retries.
 
 .PARAMETER jiraBackupUrl

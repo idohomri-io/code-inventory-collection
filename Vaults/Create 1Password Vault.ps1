@@ -21,7 +21,7 @@
     Create-1PasswordVault -ServiceAccountToken "op://token/12345" -VaultName "MyNewVault"
 
 .EXAMPLE
-    # Execute as a standalone script
+    # Execute as a standalone script  
     .\Create-1PasswordVault.ps1 -ServiceAccountToken "op://token/12345" -VaultName "MyNewVault" 
 
 #>
